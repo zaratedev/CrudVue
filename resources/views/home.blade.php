@@ -14,10 +14,10 @@
             Menu Principal
           </p>
           <ul class="menu-list">
-            <li @click"menu=0" class="hand-option"><a :class="{'is-active' : menu==0}">Dashboard</a></li>
-            <li @click"menu=1" class="hand-option"><a :class="{'is-active' : menu==1}">Departamentos</a></li>
-            <li @click"menu=2" class="hand-option"><a :class="{'is-active' : menu==2}">Cargos</a></li>
-            <li @click"menu=3" class="hand-option"><a :class="{'is-active' : menu==3}">Empleados</a></li>
+            <li @click="menu=0" class="hand-option"><a :class="{'is-active' : menu==0}">Dashboard</a></li>
+            <li @click="menu=1" class="hand-option"><a :class="{'is-active' : menu==1}">Departamentos</a></li>
+            <li @click="menu=2" class="hand-option"><a :class="{'is-active' : menu==2}">Cargos</a></li>
+            <li @click="menu=3" class="hand-option"><a :class="{'is-active' : menu==3}">Empleados</a></li>
           </ul>
         </aside>
       </div>
