@@ -38,6 +38,9 @@
           <div class="column text-center">
             <h3>Departamentos</h3>
           </div>
+          <div class="column">
+            <a class="button is-success" @click="openModal('departure','create')">Agregar Departamento</a>
+          </div>
         </div>
         <div class="columns">
           <div class="column">
@@ -80,13 +83,111 @@
       </div>
     </div>
   </div>
+  <!-- Modal -->
+  <div class="modal" :class="{'is-active' : modalGeneral}">
+    <div class="modal-backgroud"></div>
+    <div class="modal-content">
+      <div class="content">
+        <h3 class="text-center">@{{titleModal}}</h3>
+        <div class="field">
+          <label class="label">@{{messageModal}}</label>
+          <p class="control" v-if="modalDeparture != 0">
+            <input class="input" placeholder="Departamento" v-model="titleDeparture" v-if="modalDeparture == 1">
+          </p>
+          <div v-show="errorTitleDeparture" class="columns text-center">
+            <div class="column text-center text-danger">
+              El nombre del departamento no puede estar vacio
+            </div>
+          </div>
+          <div class="columns button-content">
+            <div class="column">
+              <a class="button is-success" @click="createDeparture()" v-if="modalDeparture == 1">Aceptar</a>
+            </div>
+            <div class="column">
+              <a class="button is-dnager" @click="closeModal()">Cancelar</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="modal-close" @click="closeModal()"></button>
+    </div>
+  </div>
 @endsection
 @section('script')
   <script type="text/javascript">
     let elemento = new Vue({
       el: '.app',
       data: {
-        menu: 0
+        menu: 0,
+        modalGeneral: 0,
+        titleModal: '',
+        messageModal: '',
+        modalDeparture: 0,
+        titleDeparture: '',
+        errorTitleDeparture: 0
+      },
+      methods: {
+        openModal(type, action, data = []) {
+          switch ( type ) {
+            case "departure": {
+              switch ( action ) {
+                case 'create': {
+                  this.modalGeneral = 1;
+                  this.titleModal = 'Creación de Departamento';
+                  this.messageModal = 'Ingrese el titulo del departamento';
+                  this.modalDeparture = 1;
+                  this.titleDeparture = '';
+                  this.errorTitleDeparture = 0;
+                  break;
+                }
+                case 'update': {
+                  break;
+                }
+                case 'delete': {
+                  break;
+                }
+              }
+              break;
+            }
+            case "position": {
+              switch ( action ) {
+                case 'create': {
+                  break;
+                }
+                case 'update': {
+                  break;
+                }
+                case 'delete': {
+                  break;
+                }
+              }
+              break;
+            }
+            case "employee": {
+              switch ( action ) {
+                case 'create': {
+                  break;
+                }
+                case 'update': {
+                  break;
+                }
+                case 'delete': {
+                  break;
+                }
+              }
+              break;
+            }
+            break;
+          }
+        },
+        closeModal(){
+          this.modalGeneral = 0;
+          this.titleModal = '';
+          this.messageModal = '';
+        },
+        createDeparture(){
+
+        }
       }
     })
   </script>
