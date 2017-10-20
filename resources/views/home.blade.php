@@ -56,6 +56,9 @@
                 <tr v-for="departure in departures">
                   <td>@{{ departure.id }}</td>
                   <td>@{{ departure.title }}</td>
+                  <td @click="openModal('departure','delete',departure)">
+                    <i class="fa fa-ban"></i>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -107,6 +110,7 @@
           <label class="label">@{{messageModal}}</label>
           <p class="control" v-if="modalDeparture != 0">
             <input class="input" placeholder="Departamento" v-model="titleDeparture" v-if="modalDeparture == 1">
+            <input class="input" placeholder="Departamento" v-model="titleDeparture" readonly v-if="modalDeparture == 3">
           </p>
           <div v-show="errorTitleDeparture" class="columns text-center">
             <div class="column text-center text-danger">
@@ -116,6 +120,7 @@
           <div class="columns button-content">
             <div class="column">
               <a class="button is-success" @click="createDeparture()" v-if="modalDeparture == 1">Aceptar</a>
+              <a class="button is-success" @click="destroyDeparture()" v-if="modalDeparture == 3">Aceptar</a>
             </div>
             <div class="column">
               <a class="button is-dnager" @click="closeModal()">Cancelar</a>
@@ -167,6 +172,12 @@
                   break;
                 }
                 case 'delete': {
+                  this.titleModal = 'Eliminación de Departamento';
+                  this.messageModal = 'Titulo del departamento';
+                  this.modalDeparture = 3;
+                  this.modalGeneral = 1;
+                  this.titleDeparture = data['title'];
+                  this.idDeparture = data['id'];
                   break;
                 }
               }
@@ -235,6 +246,19 @@
             me.departures = answer.departures;
           }).catch( function ( error ) {
             console.log( error );
+          })
+        },
+        destroyDeparture() {
+          let me = this;
+          axios.delete('{{ url('/departure/delete')}}'+'/'+this.idDeparture)
+          .then( function ( response ) {
+            me.idDeparture = 0;
+            me.titleDeparture = '';
+            me.modalDeparture = 0;
+            me.closeModal();
+          })
+          .catch( function ( error ) {
+            console.log('error:' + error);
           })
         }
       }

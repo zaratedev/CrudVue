@@ -13,4 +13,9 @@ class DepartureController extends Controller
     $departure->title = $request->title;
     $departure->save();
   }
+
+  public function delete($id)
+  {
+    Departure::find($id)->delete();
+  }
 }
