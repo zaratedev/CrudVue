@@ -44,7 +44,21 @@
         </div>
         <div class="columns">
           <div class="column">
-            Tabla de departamentos
+            <div v-if="!departures.length">
+              No hay departamentos
+            </div>
+            <table v-else class="table">
+              <thead>
+                <th>#</th>
+                <th>Titulo</th>
+              </thead>
+              <tbody>
+                <tr v-for="departure in departures">
+                  <td>@{{ departure.id }}</td>
+                  <td>@{{ departure.title }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -117,6 +131,9 @@
   <script type="text/javascript">
     let elemento = new Vue({
       el: '.app',
+      mounted: function () {
+        this.allQuery();
+      },
       data: {
         menu: 0,
         modalGeneral: 0,
@@ -124,7 +141,13 @@
         messageModal: '',
         modalDeparture: 0,
         titleDeparture: '',
-        errorTitleDeparture: 0
+        errorTitleDeparture: 0,
+        departures: []
+      },
+      watch: {
+        modalGeneral: function ( value ) {
+          if(!value) this.allQuery();
+        }
       },
       methods: {
         openModal(type, action, data = []) {
@@ -203,6 +226,15 @@
           })
           .cath( function ( error ) {
             console.log(error);
+          })
+        },
+        allQuery() {
+          let me = this;
+          axios.get('{{route('allQuery')}}').then( function ( response ) {
+            let answer = response.data;
+            me.departures = answer.departures;
+          }).catch( function ( error ) {
+            console.log( error );
           })
         }
       }
