@@ -51,6 +51,7 @@
               <thead>
                 <th>#</th>
                 <th>Titulo</th>
+                <th>Editar</th>
               </thead>
               <tbody>
                 <tr v-for="departure in departures">
@@ -58,6 +59,9 @@
                   <td>@{{ departure.title }}</td>
                   <td @click="openModal('departure','delete',departure)">
                     <i class="fa fa-ban"></i>
+                  </td>
+                  <td @click="openModal('departure','update', departure)">
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
                   </td>
                 </tr>
               </tbody>
@@ -109,8 +113,7 @@
         <div class="field">
           <label class="label">@{{messageModal}}</label>
           <p class="control" v-if="modalDeparture != 0">
-            <input class="input" placeholder="Departamento" v-model="titleDeparture" v-if="modalDeparture == 1">
-            <input class="input" placeholder="Departamento" v-model="titleDeparture" readonly v-if="modalDeparture == 3">
+            <input class="input" placeholder="Departamento" v-model="titleDeparture" :readonly="modalDeparture == 3">
           </p>
           <div v-show="errorTitleDeparture" class="columns text-center">
             <div class="column text-center text-danger">
@@ -120,6 +123,7 @@
           <div class="columns button-content">
             <div class="column">
               <a class="button is-success" @click="createDeparture()" v-if="modalDeparture == 1">Aceptar</a>
+              <a class="button is-success" @click="updateDeparture()" v-if="modalDeparture == 2">Aceptar</a>
               <a class="button is-success" @click="destroyDeparture()" v-if="modalDeparture == 3">Aceptar</a>
             </div>
             <div class="column">
@@ -169,6 +173,13 @@
                   break;
                 }
                 case 'update': {
+                  this.modalGeneral = 1;
+                  this.titleModal = 'Modificación de Departamento';
+                  this.messageModal = 'Modifique el titulo del departamento';
+                  this.modalDeparture = 2;
+                  this.titleDeparture = data['title'];
+                  this.errorTitleDeparture = 0;
+                  this.idDeparture = data['id'];
                   break;
                 }
                 case 'delete': {
@@ -259,6 +270,29 @@
           })
           .catch( function ( error ) {
             console.log('error:' + error);
+          })
+        },
+        updateDeparture() {
+          if (this.titleDeparture == '') {
+            this.errorTitleDeparture = 1;
+            return;
+          }
+
+          let me = this;
+
+          axios.put('{{route('departureupdate')}}', {
+            'title': this.titleDeparture,
+            'id': this.idDeparture
+          })
+          .then( (response)=> {
+            me.titleDeparture = '';
+            me.idDeparture = 0;
+            me.errorTitleDeparture = 0;
+            me.modalDeparture = 0;
+            me.closeModal();
+          })
+          .catch( (error) => {
+            console.log('error: ' + error);
           })
         }
       }
