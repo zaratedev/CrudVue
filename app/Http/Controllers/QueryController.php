@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Departure;
+use App\Position;
 
 class QueryController extends Controller
 {
@@ -11,6 +12,9 @@ class QueryController extends Controller
   {
     if ( !$request->ajax() ) return redirect('/');
 
-    return [ 'departures' => Departure::all() ];
+    return [ 
+    	'departures' => Departure::all(),
+    	'positions' => Position::with('departure')->get()
+    ];
   }
 }

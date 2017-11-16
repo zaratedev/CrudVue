@@ -74,10 +74,40 @@
           <div class="column text-center">
             <h3>Cargo</h3>
           </div>
+          <div class="column" v-if="departures.length">
+            <a class="button is-success" @click="openModal('position','create')">Agregar Cargo</a>
+          </div>
+          <div class="column" v-else>
+            <span class="text-danger">
+              Debe existir un departamento por lo menos
+            </span>
+          </div>
         </div>
         <div class="columns">
           <div class="column">
-            Tabla Cargos
+            <div v-if="!positions.length">
+              No hay cargos
+            </div>
+            <table v-else class="table">
+              <thead>
+                <th>#</th>
+                <th>Titulo</th>
+                <th>Eliminar</th>
+                <th>Editar</th>
+              </thead>
+              <tbody>
+                <tr v-for="position in positions">
+                  <td>@{{ position.id }}</td>
+                  <td>@{{ position.title }}</td>
+                  <td @click="openModal('position','delete', position)">
+                    <i class="fa fa-ban" aria-hidden="true"></i>
+                  </td>
+                  <td @click="openModal('position','update', position)">
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -97,7 +127,7 @@
         Empleados 0
       </div>
       <div class="column">
-        Departamentos 0
+        Departamentos @{{ departures.length }}
       </div>
       <div class="column">
         Cargo 0
@@ -120,11 +150,25 @@
               El nombre del departamento no puede estar vacio
             </div>
           </div>
+          <p class="control" v-if="modalPosition">
+            <input class="input" placeholder="Cargo" v-model="titlePosition" :readonly="modalPosition == 3">
+            <select class="select" :readonly="modalPosition == 3" v-model="idDeparturePosition">
+              <option v-for="departure in departures" :value="departure.id">@{{ departure.ttile }}</option>
+            </select>
+          </p>
+          <div v-show="errorTitleDeparture" class="columns text-center">
+            <div class="column text-center text-danger">
+              El nombre del cargo no puede estar vacio
+            </div>
+          </div>
           <div class="columns button-content">
             <div class="column">
               <a class="button is-success" @click="createDeparture()" v-if="modalDeparture == 1">Aceptar</a>
               <a class="button is-success" @click="updateDeparture()" v-if="modalDeparture == 2">Aceptar</a>
               <a class="button is-success" @click="destroyDeparture()" v-if="modalDeparture == 3">Aceptar</a>
+              <a class="button is-success" @click="createPosition()" v-if="modalPosition==1">Aceptar</a>
+              <a class="button is-success" @click="updatePosition()" v-if="modalPosition==2">Aceptar</a>
+              <a class="button is-success" @click="destroyPosition()" v-if="modalPosition==3">Aceptar</a>
             </div>
             <div class="column">
               <a class="button is-dnager" @click="closeModal()">Cancelar</a>
@@ -148,10 +192,17 @@
         modalGeneral: 0,
         titleModal: '',
         messageModal: '',
+        /*** Departure **/
         modalDeparture: 0,
         titleDeparture: '',
         errorTitleDeparture: 0,
-        departures: []
+        departures: [],
+        /*** Positions ***/
+        positions: [],
+        modalPosition: 0,
+        titlePosition: '',
+        errorTitlePosition: 0,
+        idDeparturePosition: 0
       },
       watch: {
         modalGeneral: function ( value ) {
@@ -197,6 +248,13 @@
             case "position": {
               switch ( action ) {
                 case 'create': {
+                  this.modalGeneral = 1;
+                  this.titleModal = 'Creación de Cargo';
+                  this.messageModal = 'Ingrese el titulo del Cargo';
+                  this.modalPosition = 1;
+                  this.titlePosition = '';
+                  this.errorTitlePosition = 0;
+                  this.idDeparturePosition = this.departures[0].id;
                   break;
                 }
                 case 'update': {
@@ -255,6 +313,7 @@
           axios.get('{{route('allQuery')}}').then( function ( response ) {
             let answer = response.data;
             me.departures = answer.departures;
+            me.positions = answer.positions;
           }).catch( function ( error ) {
             console.log( error );
           })
@@ -268,7 +327,7 @@
             me.modalDeparture = 0;
             me.closeModal();
           })
-          .catch( function ( error ) {
+          .catch( function ( error ) {b
             console.log('error:' + error);
           })
         },
@@ -294,7 +353,10 @@
           .catch( (error) => {
             console.log('error: ' + error);
           })
-        }
+        },
+        updatePosition() {},
+        destroyPosition() {},
+        createPosition() {},
       }
     })
   </script>

@@ -16,7 +16,9 @@ class DepartureController extends Controller
 
   public function delete($id)
   {
-    Departure::find($id)->delete();
+    $departure = Departure::find($id);
+    $departure->positions()->delete();
+    $departure->delete();
   }
 
   public function update(Request $request)
